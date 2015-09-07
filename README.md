@@ -17,6 +17,6 @@
 
 [Properties](Properties - 属性.md)
 
-[Methods](Methods - 方法)
+[Methods](Methods - 方法.md)
 
 *剩余的章节仍在翻译中,敬请期待...*
