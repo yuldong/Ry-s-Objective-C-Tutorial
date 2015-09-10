@@ -21,4 +21,6 @@
 
 [Protocols](Protocols - 协议.md)
 
+[Categories](Categories - 分类.md)
+
 *剩余的章节仍在翻译中,敬请期待...*
