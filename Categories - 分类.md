@@ -258,5 +258,60 @@ int main(int argc, const char * argv[]) {
 当然,你可以通过performSelector:来动态的访问到prepareToDrive:.再强调一次,OC中的所有方法都是公有的,也没有方式真正实现将这些方法对客户端代码(client code,直译的)隐藏.分类仅仅是一个基于规约来控制API中哪些部分应该对其他文件可用的方式.
 
 ####扩展
+扩展与分类相似,都能让你在一个类的接口(头文件)外部添加方法.而与分类的区别在于,扩展添加的方法必须在对应的主实现文件中实现-而不能在分类中实现.
+
+可以通过将方法添加到实现文件中,不是接口文件,来模拟私有方法.这对私有方法较少的情况很有效,但对更大的类来说,(就种实现的类)会变得很难控制(臃肿).扩展则通过允许声明正式的私有API来解决这个问题.
+
+举个例子,如果你想在上述定义的Car类中正式的添加一个私有方法-engineIsWorking,你可以在Car.m中包含一个扩展.但由于它被声明在Car.m中,而不是Car.h接口文件中,所以如果在@implementation中没有被定义,那么编译器就会找你麻烦.扩展的语法像一个空(括号中没有名称)的分类:
+
+```
+// Car.m
+#import "Car.h"
+
+// The class extension
+@interface Car ()
+- (BOOL)engineIsWorking;
+@end
+
+// The main implementation
+@implementation Car
+
+@synthesize model = _model;
+
+- (BOOL)engineIsWorking {
+    // In the real world, this would probably return a useful value
+    return YES;
+}
+- (void)startEngine {
+    if ([self engineIsWorking]) {
+        NSLog(@"Starting the %@'s engine", _model);
+    }
+}
+...
+@end
+```
+除了可以声明正式的私有API之外,扩展也可以被用来重新声明公有接口中的属性.这种方式经常被用来设置属性在类内部可读写,而对其他的对象保持只读.下面的例子中,如果我们变更上述类的扩展:
+
+```
+// Car.m
+#import "Car.h"
+
+@interface Car ()
+@property (readwrite) double odometer;
+- (BOOL)engineIsWorking;
+@end
+...
+```
+我们可以在内部通过self.odometer来(给odometer)分配值,但是如果在Car.m之外尝试这么做就会有编译错误.
+
+重新将属性设置为可读写以及创建正式的私有API对小点的类并不是很有用.对于那些你需要组织大的框架来说才是它们真正发挥效用的地方.
+
+在Xcode4.3之前,因为方法在被使用之前必须先声明的原因,所以扩展很常见.这对很多开发者来说都不爽,同时,因为扩展扮演着私有方法的向前声明角色,所以,即使在自己的项目中不使用上述的那种方式,你也会在你搞OC开发的职业生涯中遇到.
+####总结
+这个模块涵盖了OC的分类和扩展.分类是通过将实现文件分割来模块化类的一种方式.扩展则是提供(跟分类)相似的功能,不同在于,它的API必须在对应的主实现中声明.
+
+除了组织大的代码库之外,分类的其中一个常用方式是对内嵌的NSString或者NSArray这种数据类型添加方法.这种优势在于,你不必使用一个新的子类来更新存在的代码,但注意,你千万小心-不要去重写已经存在的功能.对稍小的个人项目来说,(创建)分类没有太多的必要(都不值得麻烦的去创建一个),而使用子类和协议这些规范则会让你省去一些让你头疼的调试烦恼.
+
+在下个模块,我们将探讨另一个被称作**块**的(代码)组织工具.块是用来代表和传递任意语句的方式.(这种方式)对编程范例开启了一个全新的世界.
 ***
-待续...
+写于09月09号,完成与09月11号
