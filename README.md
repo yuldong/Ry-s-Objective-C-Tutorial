@@ -25,4 +25,6 @@
 
 [Blocks](Blocks - 块.md)
 
+[Exceptions & Errors](Exceptions & Errors - 异常与错误.md)
+
 *剩余的章节仍在翻译中,敬请期待...*
