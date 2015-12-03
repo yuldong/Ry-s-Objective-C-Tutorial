@@ -27,4 +27,6 @@
 
 [Exceptions & Errors](Exceptions & Errors - 异常与错误.md)
 
+[Memory Management](Memory Management - 内存管理.md)
+
 *剩余的章节仍在翻译中,敬请期待...*
